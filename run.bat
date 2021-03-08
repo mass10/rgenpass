@@ -1,3 +1,3 @@
 @SETLOCAL
 
-@CALL cargo run -- %*
+@CALL target\release\rgenpass.exe

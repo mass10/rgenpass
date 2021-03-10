@@ -23,12 +23,19 @@ fn parse_response_data_json(request_string: &str) -> Result<ApplicationResponseC
 }
 
 /// メッセージ送信側
-fn try_to_send_message() -> Result<String, Box<dyn std::error::Error>> {
+fn try_get() -> Result<String, Box<dyn std::error::Error>> {
 	use std::io::Read;
 	use std::io::Write;
 
+	// println!("[TRACE] set connection timeout.");
+	let addr1 = std::net::SocketAddr::from(([127, 0, 0, 1], 8082));
+	std::net::TcpStream::connect_timeout(&addr1, std::time::Duration::from_micros(200))?;
+	let addresses = [addr1];
+
 	// サーバーに接続を試みます。
-	let result = std::net::TcpStream::connect("127.0.0.1:8082");
+	// println!("[TRACE] サーバーに接続を試みます。");
+	// let result = std::net::TcpStream::connect("127.0.0.1:8082");
+	let result = std::net::TcpStream::connect(&addresses[..]);
 	if result.is_err() {
 		let error = result.err().unwrap();
 		println!("[ERROR] サーバーに接続できません。情報: {}", error);
@@ -53,10 +60,10 @@ fn try_to_send_message() -> Result<String, Box<dyn std::error::Error>> {
 
 pub fn try_to_request_server() -> u8 {
 	// ローカルサーバーに接続を試みます。
-	let result = try_to_send_message();
+	let result = try_get();
 	if result.is_err() {
-		let error = result.err().unwrap();
-		println!("[ERROR] {}", error);
+		// let error = result.err().unwrap();
+		// println!("[ERROR] GET 失敗。情報: {}", error);
 		return 0;
 	}
 

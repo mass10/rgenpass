@@ -12,10 +12,13 @@ pub fn run(request: &str) -> Result<(), Box<dyn std::error::Error>> {
 
 		return Ok(());
 	} else {
-		// サーバーの起動を試みます。
-		server::spawn_server_process()?;
 		// サーバーに状況を問い合わせます。
 		let current_complexity = client::try_to_request_server();
+		if current_complexity == 0 {
+			// サーバーの起動を試みます。
+			// println!("[TRACE] サーバーの起動を試みます。");
+			server::spawn_server_process()?;
+		}
 		// 出力
 		generator::generate_password(current_complexity)?;
 

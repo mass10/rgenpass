@@ -1,7 +1,7 @@
 extern crate rand;
 
 /// パスワードを生成します。
-fn generate_string(complexity: &str, length: u32) -> String {
+fn generate_string(complexity: &str, length: usize) -> String {
 	use rand::Rng;
 
 	// 文字列を文字ベクターにばらす
@@ -16,8 +16,8 @@ fn generate_string(complexity: &str, length: u32) -> String {
 	// 要求された数で繰り返し
 	for _ in 0..length {
 		// ランダムな文字
-		let letter_position = generator.gen::<u8>() % len as u8;
-		let letter = chars[letter_position as usize];
+		let letter_position = generator.gen::<usize>() % len;
+		let letter = chars[letter_position];
 
 		response.push(letter);
 	}
@@ -68,7 +68,7 @@ pub fn generate_password(current_complexity: u8) -> Result<(), Box<dyn std::erro
 	// 文字列を生成
 	let password = generate_string(characters_set, width);
 
-	println!("{} ({})", password, password.len());
+	println!("{}", password);
 
 	return Ok(());
 }

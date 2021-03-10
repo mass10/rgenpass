@@ -25,36 +25,23 @@ fn generate_string(complexity: &str, length: usize) -> String {
 	return response;
 }
 
-#[allow(unused)]
-pub fn generate_password_c() -> String {
-	return generate_string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10);
-}
-
-#[allow(unused)]
-pub fn generate_password_cc() -> String {
-	return generate_string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10);
-}
-
-#[allow(unused)]
-pub fn generate_password_ccc() -> String {
-	return generate_string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10);
-}
-
-pub fn generate_password(current_complexity: u8) -> Result<(), Box<dyn std::error::Error>> {
+/// パスワードを生成します。
+///
+/// ### Arguments
+/// `complexity` 複雑さ
+pub fn generate_password(complexity: u8) -> Result<(), Box<dyn std::error::Error>> {
 	// complexity, and width
-	let (characters_set, width) = match current_complexity {
+	let (characters_set, width) = match complexity {
 		0 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10),
 		1 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 15),
 		2 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 20),
 		3 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 25),
 		4 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 30),
-
 		5 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 10),
 		6 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 15),
 		7 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 20),
 		8 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 25),
 		9 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 30),
-
 		10 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 20),
 		11 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 25),
 		12 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 30),

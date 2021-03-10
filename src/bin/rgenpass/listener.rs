@@ -16,7 +16,7 @@ fn parse_request_data_json(request_string: &str) -> Result<ApplicationRequestCon
 	// 要求をパース
 	let result = serde_json::from_str::<ApplicationRequestContent>(request_string);
 	if result.is_err() {
-		println!("[ERROR] 要求文字列をパースできません。情報: {}", result.err().unwrap());
+		// println!("[ERROR] 要求文字列をパースできません。情報: {}", result.err().unwrap());
 		return Err(Box::new(application_error::ApplicationError::new("無効な要求です。")));
 	}
 	let request_data = result.unwrap();
@@ -31,7 +31,7 @@ fn accept(mut peer_socket: std::net::TcpStream, current_complexity: u8) -> Resul
 	// 読み込みタイムアウトは15秒
 	let result = peer_socket.set_read_timeout(Some(std::time::Duration::from_secs(15)));
 	if result.is_err() {
-		println!("[ERROR] タイムアウト設定に失敗しています。(情報: {})", result.err().unwrap());
+		// println!("[ERROR] タイムアウト設定に失敗しています。(情報: {})", result.err().unwrap());
 		return Ok("FATAL".to_string());
 	}
 
@@ -41,7 +41,7 @@ fn accept(mut peer_socket: std::net::TcpStream, current_complexity: u8) -> Resul
 	if result.is_err() {
 		let error = result.err().unwrap();
 		if error.kind() != std::io::ErrorKind::WouldBlock {
-			println!("[ERROR] リクエストデータの受信が完了しませんでした。情報: {}, [{}]", error, line);
+			// println!("[ERROR] リクエストデータの受信が完了しませんでした。情報: {}, [{}]", error, line);
 			return Ok("REJECTED".to_string());
 		}
 	}
@@ -49,8 +49,8 @@ fn accept(mut peer_socket: std::net::TcpStream, current_complexity: u8) -> Resul
 	// リクエストデータをパース
 	let result = parse_request_data_json(&line);
 	if result.is_err() {
-		let error = result.err().unwrap();
-		println!("[ERROR] リクエストデータのパースに失敗しました。情報: {}", error);
+		// let error = result.err().unwrap();
+		// println!("[ERROR] リクエストデータのパースに失敗しました。情報: {}", error);
 		return Ok("REJECTED".to_string());
 	}
 

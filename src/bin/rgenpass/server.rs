@@ -5,9 +5,6 @@ pub fn spawn_server_process() -> Result<(), Box<dyn std::error::Error>> {
 	let executing_app_path = util::get_runnning_path()?;
 	let mut command = std::process::Command::new(&executing_app_path);
 	command.arg("--server");
-	let result = command.spawn();
-	if result.is_err() {
-		println!("[ERROR] {} [{}]", result.err().unwrap(), &executing_app_path);
-	}
+	command.spawn()?;
 	return Ok(());
 }

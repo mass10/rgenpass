@@ -4,9 +4,7 @@ mod application;
 mod generator;
 mod util;
 
-///
 /// Application entrypoint.
-///
 fn main() {
 	// Run application.
 	let result = application::run();

@@ -3,9 +3,20 @@ name = "rgenpass"
 version = "0.1.0"
 authors = ["Irisawa Masaru <irisawa.masaru@gmail.com>"]
 edition = "2018"
+license = "MIT"
+description = "Password generator"
+repository = "https://github.com/mass10/rgenpass/"
+documentation = "https://docs.rs/crate/rgenpass/"
+categories = ["command-line-utilities"]
+include = [
+    "src/**/*.rs",
+    "Cargo.toml",
+    "LICENSE",
+    "README.md"
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-crossterm = "*"
-rand = "*"
+crossterm = "^0.19.0"
+rand = "^0.8.3"

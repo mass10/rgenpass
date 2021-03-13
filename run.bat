@@ -1,3 +1,4 @@
 @SETLOCAL
 
-@CALL target\release\rgenpass.exe
+@CALL cargo run --release --quiet
+

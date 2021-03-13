@@ -29,7 +29,10 @@ fn generate_string(complexity: &str, length: usize) -> String {
 ///
 /// ### Arguments
 /// `complexity` 複雑さ
-pub fn generate_password(complexity: u8) -> String {
+pub fn generate_password(mut complexity: i8) -> String {
+	if complexity < 0 {
+		complexity = 0;
+	}
 	// complexity and length
 	let (characters_set, width) = match complexity {
 		0 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10),

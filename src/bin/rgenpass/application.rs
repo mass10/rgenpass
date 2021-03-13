@@ -1,3 +1,5 @@
+use std::cmp::max;
+
 use super::generator;
 
 use super::util;
@@ -20,6 +22,10 @@ fn detect_key() -> std::result::Result<Option<crossterm::event::Event>, std::box
 	return Ok(Some(key));
 }
 
+fn fix(value: i8) -> i8 {
+	return max(0, value);
+}
+
 /// Run application.
 pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
 	use crossterm::event::{Event, KeyCode, KeyModifiers};
@@ -31,9 +37,13 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 
 	println!("(Press [Enter] or [Space] to generate random password.)");
 
+	// password complexity
 	let mut current_complexity = 0;
 
+	// time keeper
 	let mut time_keeper = util::TimeKeeper::new();
+
+	let mut complexity_time_keeper = util::ComplexityTimeKeeper::new();
 
 	// Main event loop for key press.
 	loop {
@@ -51,6 +61,8 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 
 		time_keeper.start();
 
+		// let current_time = std::time::Instant::now();
+
 		match key {
 			// [Ctrl][C] to quit.
 			Event::Key(KeyEvent {
@@ -59,16 +71,16 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 			}) => break,
 			// [Enter]
 			Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
-				current_complexity = current_complexity + 1;
-				println!("{}", generator::generate_password(current_complexity / 3));
+				current_complexity = fix(current_complexity + complexity_time_keeper.test());
+				println!("{}", generator::generate_password(current_complexity));
 			}
 			// [Enter]
 			Event::Key(KeyEvent {
 				code: KeyCode::Char(' '),
 				modifiers: KeyModifiers::NONE,
 			}) => {
-				current_complexity = current_complexity + 1;
-				println!("{}", generator::generate_password(current_complexity / 3));
+				current_complexity = fix(current_complexity + complexity_time_keeper.test());
+				println!("{}", generator::generate_password(current_complexity));
 			}
 			// Else
 			_ => break,

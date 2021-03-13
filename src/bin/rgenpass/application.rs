@@ -20,8 +20,8 @@ fn detect_key() -> std::result::Result<Option<crossterm::event::Event>, std::box
 	return Ok(Some(key));
 }
 
-/// Generates password.
-fn generate_password() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
+/// Run application.
+pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
 	use crossterm::event::{Event, KeyCode, KeyModifiers};
 
 	// Make screen raw mode.
@@ -78,10 +78,4 @@ fn generate_password() -> std::result::Result<(), std::boxed::Box<dyn std::error
 	println!();
 
 	return Ok(());
-}
-
-/// Run application.
-pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
-	// Decide complexity.
-	return generate_password();
 }

@@ -1,31 +1,43 @@
-/// タイムキーパー
+///
+/// Time keeper
+///
 pub struct TimeKeeper {
-	/// 開始タイムスタンプ
-	start: std::time::Instant,
+	start: Option<std::time::Instant>,
+	times: u32,
 }
 
 impl TimeKeeper {
-	/// 新しいインスタンスを返します。
 	pub fn new() -> TimeKeeper {
-		return TimeKeeper { start: std::time::Instant::now() };
+		return TimeKeeper { start: None, times: 0 };
 	}
 
-	/// 終了の判断
-	pub fn is_over(&self) -> bool {
+	pub fn start(&mut self) {
+		self.start = Some(std::time::Instant::now());
+	}
+
+	/// Check time keeper started or not.
+	///
+	///
+	fn started(&mut self) -> bool {
+		return self.start.is_some();
+	}
+
+	/// Check elapsed.
+	///
+	/// # Returns
+	/// true when time over.
+	pub fn is_over(&mut self) -> bool {
+		if !self.started() {
+			// Not started.
+			return false;
+		}
+
+		self.times += 1;
 		let current_time = std::time::Instant::now();
-		let elapsed = current_time - self.start;
-		return 2300 <= elapsed.as_millis();
+		let erapsed = current_time - self.start.unwrap();
+		if erapsed.as_millis() < 400 {
+			return false;
+		}
+		return true;
 	}
-
-	/// タイマーをリセット
-	pub fn reset(&mut self) {
-		self.start = std::time::Instant::now();
-	}
-}
-
-pub fn get_runnning_path() -> Result<String, Box<dyn std::error::Error>> {
-	let path = std::env::current_exe()?;
-	let path = path.as_path();
-	let path = path.to_str().unwrap().to_string();
-	return Ok(path);
 }

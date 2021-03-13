@@ -1,12 +1,11 @@
 build:
 	cargo fmt
-	cargo build
+	cargo build --release
 
 install:
 	cargo fmt
-	cargo build --release --quiet
+	cargo build --release
 	cargo install --path .
 
 uninstall:
-	cargo uninstall rcleanup
-
+	cargo uninstall rgenpass

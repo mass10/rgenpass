@@ -35,9 +35,35 @@ impl TimeKeeper {
 		self.times += 1;
 		let current_time = std::time::Instant::now();
 		let erapsed = current_time - self.start.unwrap();
-		if erapsed.as_millis() < 400 {
+		if erapsed.as_millis() < 600 {
 			return false;
 		}
 		return true;
+	}
+}
+
+///
+/// Complexity time keeper
+///
+pub struct ComplexityTimeKeeper {
+	start: std::time::Instant,
+}
+
+impl ComplexityTimeKeeper {
+	pub fn new() -> ComplexityTimeKeeper {
+		return ComplexityTimeKeeper { start: std::time::Instant::now() };
+	}
+
+	pub fn test(&mut self) -> i8 {
+		let current_time = std::time::Instant::now();
+		let erapsed = current_time - self.start;
+		self.start = current_time;
+		if erapsed.as_millis() < 200 {
+			return 1;
+		}
+		if erapsed.as_millis() < 300 {
+			return 0;
+		}
+		return -1;
 	}
 }

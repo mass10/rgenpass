@@ -29,8 +29,8 @@ fn generate_string(complexity: &str, length: usize) -> String {
 ///
 /// ### Arguments
 /// `complexity` 複雑さ
-pub fn generate_password(complexity: u8) -> Result<(), Box<dyn std::error::Error>> {
-	// complexity, and width
+pub fn generate_password(complexity: u8) -> String {
+	// complexity and length
 	let (characters_set, width) = match complexity {
 		0 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10),
 		1 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 15),
@@ -53,9 +53,5 @@ pub fn generate_password(complexity: u8) -> Result<(), Box<dyn std::error::Error
 	};
 
 	// 文字列を生成
-	let password = generate_string(characters_set, width);
-
-	println!("{}", password);
-
-	return Ok(());
+	return generate_string(characters_set, width);
 }

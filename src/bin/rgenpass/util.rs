@@ -88,17 +88,18 @@ impl ComplexityController {
 	/// ### Returns
 	/// The current complexity.
 	pub fn refresh(&mut self) -> u8 {
+		// elapsed time
 		let current_time = std::time::Instant::now();
+		let erapsed = current_time - self.start;
 
 		// Reset internal timeer.
 		self.start = current_time;
 
-		let erapsed = current_time - self.start;
-		if erapsed.as_millis() < 200 {
+		if erapsed.as_millis() < 180 {
 			self.increment();
 			return self.complexity as u8;
 		}
-		if erapsed.as_millis() < 300 {
+		if erapsed.as_millis() < 250 {
 			// No updates.
 			return self.complexity as u8;
 		}

@@ -11,6 +11,15 @@ fn is_valid_password(s: &str) -> bool {
 	if s.ends_with(" ") {
 		return false;
 	}
+
+	if s.starts_with("\"") {
+		return false;
+	}
+
+	if s.starts_with("'") {
+		return false;
+	}
+
 	return true;
 }
 

@@ -30,19 +30,13 @@ fn positive(value: i8) -> i8 {
 pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
 	use crossterm::event::{Event, KeyCode, KeyModifiers};
 
-	// Make screen raw mode.
-	if false {
-		crossterm::terminal::enable_raw_mode()?;
-	}
-
 	println!("(Press [Enter] or [Space] to generate random password.)");
 
 	// password complexity
 	let mut current_complexity = 0;
-
 	// time keeper
 	let mut time_keeper = util::TimeKeeper::new();
-
+	// complexity time keeper
 	let mut complexity_time_keeper = util::ComplexityTimeKeeper::new();
 
 	// Main event loop for key press.

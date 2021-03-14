@@ -96,15 +96,19 @@ impl ComplexityController {
 		self.start = current_time;
 
 		if erapsed.as_millis() < 180 {
+			// Up
 			self.increment();
-			return self.complexity as u8;
+			return self.complexity;
 		}
+
 		if erapsed.as_millis() < 250 {
 			// No updates.
-			return self.complexity as u8;
+			return self.complexity;
 		}
+
+		// Down
 		self.decrement();
-		return self.complexity as u8;
+		return self.complexity;
 	}
 }
 

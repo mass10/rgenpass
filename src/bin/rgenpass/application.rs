@@ -22,8 +22,8 @@ fn detect_key() -> std::result::Result<Option<crossterm::event::Event>, std::box
 	return Ok(Some(key));
 }
 
-fn fix(value: i8) -> i8 {
-	return max(0, value);
+fn positive(value: i8) -> i8 {
+	return max(value, 0);
 }
 
 /// Run application.
@@ -71,23 +71,21 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 			}) => break,
 			// [Enter]
 			Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
-				current_complexity = fix(current_complexity + complexity_time_keeper.test());
-				println!("{}", generator::generate_password(current_complexity));
+				current_complexity = positive(current_complexity + complexity_time_keeper.test());
+				println!("{}", generator::generate_password(current_complexity as u8));
 			}
 			// [Enter]
 			Event::Key(KeyEvent {
 				code: KeyCode::Char(' '),
 				modifiers: KeyModifiers::NONE,
 			}) => {
-				current_complexity = fix(current_complexity + complexity_time_keeper.test());
-				println!("{}", generator::generate_password(current_complexity));
+				current_complexity = positive(current_complexity + complexity_time_keeper.test());
+				println!("{}", generator::generate_password(current_complexity as u8));
 			}
 			// Else
 			_ => break,
 		}
 	}
-
-	println!();
 
 	return Ok(());
 }

@@ -1,60 +1,88 @@
 extern crate rand;
 
-/// パスワードを生成します。
+/// Validate string for password.
+///
+/// ### Returns
+/// The validation
+fn is_valid_password(s: &str) -> bool {
+	if s.starts_with(" ") {
+		return false;
+	}
+	if s.ends_with(" ") {
+		return false;
+	}
+	return true;
+}
+
+/// Generates a string.
+///
+/// ### Arguments
+/// `complexity` String complexity
+/// `length` Required length
 fn generate_string(complexity: &str, length: usize) -> String {
 	use rand::Rng;
 
-	// 文字列を文字ベクターにばらす
-	let chars: Vec<char> = complexity.chars().collect();
-	// 文字数
-	let len = chars.len();
-	// 乱数生成器
+	// generator
 	let mut generator = rand::thread_rng();
-	// 応答
+
+	let chars: Vec<char> = complexity.chars().collect();
+	let len = chars.len();
 	let mut response = "".to_string();
 
-	// 要求された数で繰り返し
 	for _ in 0..length {
-		// ランダムな文字
+		// generate random char
 		let letter_position = generator.gen::<usize>() % len;
 		let letter = chars[letter_position];
 
+		// append to response
 		response.push(letter);
 	}
 
 	return response;
 }
 
-/// パスワードを生成します。
+/// Generates a new password. (WIP)
 ///
 /// ### Arguments
-/// `complexity` 複雑さ
-pub fn generate_password(mut complexity: i8) -> String {
-	if complexity < 0 {
-		complexity = 0;
-	}
+/// `complexity` Password complexity
+pub fn generate_password(complexity: u8) -> String {
 	// complexity and length
+	// TODO: more better!
 	let (characters_set, width) = match complexity {
 		0 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 10),
-		1 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 15),
-		2 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 20),
-		3 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 25),
-		4 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 30),
-		5 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 10),
-		6 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 15),
-		7 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 20),
-		8 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 25),
-		9 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 30),
-		10 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 20),
-		11 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 25),
-		12 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 30),
-		13 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 35),
-		14 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 40),
-		15 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 45),
-		16 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 50),
+		1 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 13),
+		2 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 16),
+		3 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 19),
+		4 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 22),
+		5 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 25),
+		6 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 28),
+		7 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 31),
+		8 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", 33),
+		9 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 10),
+		10 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 15),
+		11 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 20),
+		12 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 25),
+		13 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=+_", 30),
+		14 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 20),
+		15 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 25),
+		16 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 30),
+		17 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 35),
+		18 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 40),
+		19 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 45),
+		20 => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 50),
 		_ => ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890-=^~\\|@`[{{;+:*]}}!\"#$%&'(),./<>?_ ", 60),
 	};
 
-	// 文字列を生成
-	return generate_string(characters_set, width);
+	loop {
+		// Generate a new password
+		let password = generate_string(characters_set, width);
+
+		// validation
+		if !is_valid_password(&password) {
+			continue;
+		}
+
+		// It's OK.
+		return password;
+	}
 }

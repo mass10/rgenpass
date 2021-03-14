@@ -59,25 +59,21 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 
 		match key {
 			// [Ctrl][C] to quit.
-			Event::Key(KeyEvent {
-				code: KeyCode::Char('c'),
-				modifiers: KeyModifiers::CONTROL,
-			}) => break,
+			Event::Key(KeyEvent { code: KeyCode::Char('c'), modifiers: KeyModifiers::CONTROL }) => break,
+			// [Q] to quit.
+			Event::Key(KeyEvent { code: KeyCode::Char('q'), modifiers: KeyModifiers::NONE }) => break,
 			// [Enter]
 			Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
 				current_complexity = positive(current_complexity + complexity_time_keeper.test());
 				println!("{}", generator::generate_password(current_complexity as u8));
 			}
-			// [Enter]
-			Event::Key(KeyEvent {
-				code: KeyCode::Char(' '),
-				modifiers: KeyModifiers::NONE,
-			}) => {
+			// [Space]
+			Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => {
 				current_complexity = positive(current_complexity + complexity_time_keeper.test());
 				println!("{}", generator::generate_password(current_complexity as u8));
 			}
 			// Else
-			_ => break,
+			_ => (),
 		}
 	}
 

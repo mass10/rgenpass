@@ -20,7 +20,7 @@ impl TimeKeeper {
 		self.start = Some(std::time::Instant::now());
 	}
 
-	/// Check time keeper started or not.
+	/// Check whether time keeper is started or not.
 	///
 	/// ### Returns
 	/// `true` if started.
@@ -28,11 +28,11 @@ impl TimeKeeper {
 		return self.start.is_some();
 	}
 
-	/// Check elapsed time.
+	/// Check the elapsed time.
 	///
 	/// ### Returns
 	/// `true` when it's over.
-	pub fn is_over(&mut self) -> bool {
+	pub fn is_timed_out(&mut self) -> bool {
 		if !self.started() {
 			// Not started.
 			return false;
@@ -41,6 +41,7 @@ impl TimeKeeper {
 		let current_time = std::time::Instant::now();
 		let erapsed = current_time - self.start.unwrap();
 		if erapsed.as_millis() < 700 {
+			// valid
 			return false;
 		}
 
@@ -50,27 +51,63 @@ impl TimeKeeper {
 }
 
 ///
-/// Complexity time keeper
+/// Complexity controller
 ///
-pub struct ComplexityTimeKeeper {
+pub struct ComplexityController {
+	/// Start time
 	start: std::time::Instant,
+	/// Complexity
+	complexity: u8,
 }
 
-impl ComplexityTimeKeeper {
-	pub fn new() -> ComplexityTimeKeeper {
-		return ComplexityTimeKeeper { start: std::time::Instant::now() };
+impl ComplexityController {
+	/// Returns a new instance.
+	///
+	/// ### Returns
+	/// A new instance of [ComplexityTimeKeeper]
+	pub fn new() -> ComplexityController {
+		return ComplexityController { start: std::time::Instant::now(), complexity: 0 };
 	}
 
-	pub fn test(&mut self) -> i8 {
+	/// Increment innternal value.
+	fn increment(&mut self) {
+		// prevent MAX overflow.
+		self.complexity = std::cmp::max(self.complexity, self.complexity + 1);
+	}
+
+	/// Decrement innternal value.
+	fn decrement(&mut self) {
+		// prevent MIN overflow.
+		self.complexity = std::cmp::min(self.complexity, self.complexity - 1);
+	}
+
+	/// Refresh complexity.
+	///
+	/// ### Returns
+	/// The current complexity.
+	pub fn refresh(&mut self) -> u8 {
 		let current_time = std::time::Instant::now();
-		let erapsed = current_time - self.start;
+
+		// Reset internal timeer.
 		self.start = current_time;
+
+		let erapsed = current_time - self.start;
 		if erapsed.as_millis() < 200 {
-			return 1;
+			self.increment();
+			return self.complexity as u8;
 		}
 		if erapsed.as_millis() < 300 {
-			return 0;
+			// No updates.
+			return self.complexity as u8;
 		}
-		return -1;
+		self.decrement();
+		return self.complexity as u8;
 	}
+}
+
+#[test]
+pub fn test1() {
+	let mut complexity_controller = ComplexityController::new();
+	let value = complexity_controller.refresh();
+	assert!(1 == value, "現在の値が0でないこと");
 }

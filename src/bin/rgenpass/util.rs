@@ -1,6 +1,8 @@
 ///
 /// Time keeper
 ///
+/// Manage termination of the application.
+///
 pub struct TimeKeeper {
 	/// Start time
 	start: Option<std::time::Instant>,

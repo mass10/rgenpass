@@ -1,6 +1,7 @@
 # About
 
-* A simple genpass
+* Password generator.
+* NO CONFIGURATIONS!
 
 # Getting Started
 
@@ -15,3 +16,5 @@ cargo install rgenpass
 ```
 rgenpass
 ```
+
+(usage)[.images/usage-video.mp4]

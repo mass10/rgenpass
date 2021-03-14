@@ -3,7 +3,7 @@ extern crate rand;
 /// Validate string for password.
 ///
 /// ### Returns
-/// The validation
+/// `true` if valid
 fn is_valid_password(s: &str) -> bool {
 	if s.starts_with(" ") {
 		return false;
@@ -19,6 +19,9 @@ fn is_valid_password(s: &str) -> bool {
 /// ### Arguments
 /// `complexity` String complexity
 /// `length` Required length
+///
+/// ### Returns
+/// a new string
 fn generate_string(complexity: &str, length: usize) -> String {
 	use rand::Rng;
 

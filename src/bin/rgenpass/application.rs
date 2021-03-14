@@ -1,15 +1,13 @@
-use std::cmp::max;
+use crossterm::event::KeyEvent;
 
 use super::generator;
-
 use super::util;
-use crossterm::event::KeyEvent;
 
 /// Detects key press.
 ///
-/// # Returns
+/// ### Returns
 /// Pressed key identifier if exists.
-fn detect_key() -> std::result::Result<Option<crossterm::event::Event>, std::boxed::Box<dyn std::error::Error>> {
+fn detect_key_press() -> std::result::Result<Option<crossterm::event::Event>, std::boxed::Box<dyn std::error::Error>> {
 	// Detect some key pressed.
 	let result = crossterm::event::poll(std::time::Duration::from_millis(10))?;
 	if !result {
@@ -22,40 +20,34 @@ fn detect_key() -> std::result::Result<Option<crossterm::event::Event>, std::box
 	return Ok(Some(key));
 }
 
-fn positive(value: i8) -> i8 {
-	return max(value, 0);
-}
-
 /// Run application.
 pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
 	use crossterm::event::{Event, KeyCode, KeyModifiers};
 
+	// In fact, any key is applied.
 	println!("(Press [Enter] or [Space] to generate random password.)");
 
-	// password complexity
-	let mut current_complexity = 0;
 	// time keeper
 	let mut time_keeper = util::TimeKeeper::new();
 	// complexity time keeper
-	let mut complexity_time_keeper = util::ComplexityTimeKeeper::new();
+	let mut complexity_controller = util::ComplexityController::new();
 
 	// Main event loop for key press.
 	loop {
 		// Handle termination.
-		if time_keeper.is_over() {
+		if time_keeper.is_timed_out() {
 			break;
 		}
 
 		// Detect key press.
-		let result = detect_key()?;
+		let result = detect_key_press()?;
 		if result.is_none() {
 			continue;
 		}
 		let key = result.unwrap();
 
+		// Once any key pressed, time keeper starts.
 		time_keeper.start();
-
-		// let current_time = std::time::Instant::now();
 
 		match key {
 			// [Ctrl][C] to quit.
@@ -64,16 +56,16 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 			Event::Key(KeyEvent { code: KeyCode::Char('q'), modifiers: KeyModifiers::NONE }) => break,
 			// [Enter]
 			Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
-				current_complexity = positive(current_complexity + complexity_time_keeper.test());
-				println!("{}", generator::generate_password(current_complexity as u8));
+				println!("{}", generator::generate_password(complexity_controller.refresh()));
 			}
 			// [Space]
 			Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => {
-				current_complexity = positive(current_complexity + complexity_time_keeper.test());
-				println!("{}", generator::generate_password(current_complexity as u8));
+				println!("{}", generator::generate_password(complexity_controller.refresh()))
 			}
-			// Else
-			_ => (),
+			// Else (any key is applied)
+			_ => {
+				println!("{}", generator::generate_password(complexity_controller.refresh()))
+			}
 		}
 	}
 

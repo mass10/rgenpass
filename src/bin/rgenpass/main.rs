@@ -2,7 +2,7 @@ extern crate crossterm;
 
 mod application;
 mod generator;
-mod util;
+mod keyboard;
 
 /// Application entrypoint.
 fn main() {

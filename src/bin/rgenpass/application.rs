@@ -1,23 +1,66 @@
 use crossterm::event::KeyEvent;
 
 use super::generator;
-use super::util;
+use super::keyboard;
 
-/// Detects key press.
 ///
-/// ### Returns
-/// Pressed key identifier if exists.
-fn detect_key_press() -> std::result::Result<Option<crossterm::event::Event>, std::boxed::Box<dyn std::error::Error>> {
-	// Detect some key pressed.
-	let result = crossterm::event::poll(std::time::Duration::from_millis(10))?;
-	if !result {
-		return Ok(None);
+/// Complexity controller
+///
+pub struct ComplexityController {
+	/// Start time
+	start: std::time::Instant,
+	/// Complexity
+	complexity: u8,
+}
+
+impl ComplexityController {
+	/// Returns a new instance.
+	///
+	/// ### Returns
+	/// A new instance of [ComplexityTimeKeeper]
+	pub fn new() -> ComplexityController {
+		return ComplexityController { start: std::time::Instant::now(), complexity: 0 };
 	}
 
-	// Return the next key.
-	let key = crossterm::event::read()?;
+	/// Increment innternal value.
+	fn increment(&mut self) {
+		// prevent MAX overflow.
+		self.complexity = std::cmp::max(self.complexity, self.complexity + 1);
+	}
 
-	return Ok(Some(key));
+	/// Decrement innternal value.
+	fn decrement(&mut self) {
+		// prevent MIN overflow.
+		self.complexity = std::cmp::min(self.complexity, self.complexity - 1);
+	}
+
+	/// Refresh complexity.
+	///
+	/// ### Returns
+	/// The current complexity.
+	pub fn refresh(&mut self) -> u8 {
+		// elapsed time
+		let current_time = std::time::Instant::now();
+		let erapsed = current_time - self.start;
+
+		// Reset internal timeer.
+		self.start = current_time;
+
+		if erapsed.as_millis() < 180 {
+			// Up
+			self.increment();
+			return self.complexity;
+		}
+
+		if erapsed.as_millis() < 250 {
+			// No updates.
+			return self.complexity;
+		}
+
+		// Down
+		self.decrement();
+		return self.complexity;
+	}
 }
 
 /// Run application.
@@ -27,27 +70,21 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 	// In fact, any key is applied.
 	println!("(Press [Enter] or [Space] to generate random password.)");
 
-	// time keeper
-	let mut time_keeper = util::TimeKeeper::new();
+	// Keyboard queue
+	let mut keyboard = keyboard::KeyboardQueue::new();
+
 	// complexity time keeper
-	let mut complexity_controller = util::ComplexityController::new();
+	let mut complexity_controller = ComplexityController::new();
 
 	// Main event loop for key press.
 	loop {
-		// Handle termination.
-		if time_keeper.is_timed_out() {
+		// Detect key press.
+		let result = keyboard.pop()?;
+		if result.is_none() {
+			// shutdown
 			break;
 		}
-
-		// Detect key press.
-		let result = detect_key_press()?;
-		if result.is_none() {
-			continue;
-		}
 		let key = result.unwrap();
-
-		// Once any key pressed, time keeper starts.
-		time_keeper.start();
 
 		match key {
 			// [Ctrl][C] to quit.

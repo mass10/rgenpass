@@ -41,7 +41,10 @@ impl TimeKeeper {
 		}
 
 		let current_time = std::time::Instant::now();
+
+		// elapsed since timer started.
 		let erapsed = current_time - self.start.unwrap();
+
 		if erapsed.as_millis() < 700 {
 			// valid
 			return false;

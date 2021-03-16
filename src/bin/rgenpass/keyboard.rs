@@ -18,7 +18,7 @@ impl TimeKeeper {
 	}
 
 	/// Start keeper
-	pub fn start(&mut self) {
+	pub fn refresh(&mut self) {
 		self.start = Some(std::time::Instant::now());
 	}
 
@@ -26,7 +26,7 @@ impl TimeKeeper {
 	///
 	/// ### Returns
 	/// `true` if started.
-	fn started(&mut self) -> bool {
+	fn is_started(&self) -> bool {
 		return self.start.is_some();
 	}
 
@@ -34,8 +34,8 @@ impl TimeKeeper {
 	///
 	/// ### Returns
 	/// `true` when it's over.
-	pub fn is_timed_out(&mut self) -> bool {
-		if !self.started() {
+	pub fn is_timed_out(&self) -> bool {
+		if !self.is_started() {
 			// Not started.
 			return false;
 		}
@@ -90,8 +90,8 @@ impl KeyboardQueue {
 			// Detect key press.
 			let key = crossterm::event::read()?;
 
-			// Once any key pressed, time keeper starts.
-			self.time_keeper.start();
+			// Once any key pressed, time keeper refreshes.
+			self.time_keeper.refresh();
 
 			return Ok(Some(key));
 		}

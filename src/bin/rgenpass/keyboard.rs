@@ -22,28 +22,19 @@ impl TimeKeeper {
 		self.start = Some(std::time::Instant::now());
 	}
 
-	/// Check whether time keeper is started or not.
-	///
-	/// ### Returns
-	/// `true` if started.
-	fn is_started(&self) -> bool {
-		return self.start.is_some();
-	}
-
 	/// Check the elapsed time.
 	///
 	/// ### Returns
 	/// `true` when it's over.
 	pub fn is_timed_out(&self) -> bool {
-		if !self.is_started() {
-			// Not started. (Maybe no keys are pressed yet.)
+		let start_time = self.start;
+		if start_time.is_none() {
 			return false;
 		}
 
+		let start_time = start_time.unwrap();
 		let current_time = std::time::Instant::now();
-
-		// elapsed since timer started.
-		let erapsed = current_time - self.start.unwrap();
+		let erapsed = current_time - start_time;
 
 		if erapsed.as_millis() < 700 {
 			// valid

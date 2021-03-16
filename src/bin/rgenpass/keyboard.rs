@@ -36,7 +36,7 @@ impl TimeKeeper {
 	/// `true` when it's over.
 	pub fn is_timed_out(&self) -> bool {
 		if !self.is_started() {
-			// Not started.
+			// Not started. (Maybe no keys are pressed yet.)
 			return false;
 		}
 

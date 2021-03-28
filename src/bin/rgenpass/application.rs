@@ -71,7 +71,7 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 	println!("(Press [Enter] or [Space] to generate random password.)");
 
 	// Keyboard queue
-	let mut keyboard = keyboard::KeyboardQueue::new();
+	let mut keyboard_queue = keyboard::KeyboardQueue::new();
 
 	// complexity time keeper
 	let mut complexity_controller = ComplexityController::new();
@@ -79,7 +79,7 @@ pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> 
 	// Main event loop for key press.
 	loop {
 		// Detect key press.
-		let result = keyboard.pop()?;
+		let result = keyboard_queue.pop()?;
 		if result.is_none() {
 			// shutdown
 			break;

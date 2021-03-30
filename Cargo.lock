@@ -201,7 +201,7 @@ dependencies = [
 
 [[package]]
 name = "rgenpass"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "crossterm",
  "rand",

@@ -7,7 +7,7 @@ mod keyboard;
 /// Application entrypoint.
 fn main() {
 	// Run application.
-	let result = application::run();
+	let result = application::Application::new().run();
 	if result.is_err() {
 		let error = result.err().unwrap();
 		println!("[ERROR] {}", error);

@@ -1,0 +1,34 @@
+name: Rust Application
+
+#
+# TRIGGERS to run this job.
+#
+on:
+    push:
+        branches: [ main ]
+    pull_request:
+        branches: [ main ]
+
+#
+# ENVIRONMENT VARIABLES
+#
+env:
+    CARGO_TERM_COLOR: always
+
+#
+# JOBS
+#
+jobs:
+    build:
+        # PLATFORM
+        runs-on: ubuntu-latest
+
+        # STEPS
+        steps:
+          - uses: actions/checkout@v2
+
+          - name: Build
+            run: cargo build --verbose
+
+          - name: Run tests
+            run: cargo test --verbose

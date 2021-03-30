@@ -4,65 +4,8 @@ use super::generator;
 use super::keyboard;
 
 ///
-/// Complexity controller
+/// Application definition.
 ///
-pub struct ComplexityController {
-	/// Start time
-	start: std::time::Instant,
-	/// Complexity
-	complexity: u8,
-}
-
-impl ComplexityController {
-	/// Returns a new instance.
-	///
-	/// ### Returns
-	/// A new instance of [ComplexityTimeKeeper]
-	pub fn new() -> ComplexityController {
-		return ComplexityController { start: std::time::Instant::now(), complexity: 0 };
-	}
-
-	/// Increment innternal value.
-	fn increment(&mut self) {
-		// prevent MAX overflow.
-		self.complexity = std::cmp::max(self.complexity, self.complexity + 1);
-	}
-
-	/// Decrement innternal value.
-	fn decrement(&mut self) {
-		// prevent MIN overflow.
-		self.complexity = std::cmp::min(self.complexity, self.complexity - 1);
-	}
-
-	/// Refresh complexity.
-	///
-	/// ### Returns
-	/// The current complexity.
-	pub fn get_current_complexity(&mut self) -> u8 {
-		// elapsed time
-		let current_time = std::time::Instant::now();
-		let erapsed = current_time - self.start;
-
-		// Reset internal timeer.
-		self.start = current_time;
-
-		if erapsed.as_millis() < 180 {
-			// Up
-			self.increment();
-			return self.complexity;
-		}
-
-		if erapsed.as_millis() < 250 {
-			// No updates.
-			return self.complexity;
-		}
-
-		// Down
-		self.decrement();
-		return self.complexity;
-	}
-}
-
 pub struct Application;
 
 impl Application {
@@ -81,8 +24,8 @@ impl Application {
 		// Keyboard queue
 		let mut keyboard_queue = keyboard::KeyboardQueue::new();
 
-		// complexity time keeper
-		let mut complexity_controller = ComplexityController::new();
+		// password generator
+		let mut generator = generator::PasswordGenerator::new();
 
 		// Main event loop for key press.
 		loop {
@@ -100,17 +43,11 @@ impl Application {
 				// [Q] to quit.
 				Event::Key(KeyEvent { code: KeyCode::Char('q'), modifiers: KeyModifiers::NONE }) => break,
 				// [Enter]
-				Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
-					println!("{}", generator::generate_password(complexity_controller.get_current_complexity()))
-				}
+				Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => generator.request(),
 				// [Space]
-				Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => {
-					println!("{}", generator::generate_password(complexity_controller.get_current_complexity()))
-				}
+				Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => generator.request(),
 				// Else (any key is applied)
-				_ => {
-					println!("{}", generator::generate_password(complexity_controller.get_current_complexity()))
-				}
+				_ => generator.request(),
 			}
 		}
 

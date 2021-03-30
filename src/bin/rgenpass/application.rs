@@ -38,7 +38,7 @@ impl ComplexityController {
 	///
 	/// ### Returns
 	/// The current complexity.
-	pub fn refresh(&mut self) -> u8 {
+	pub fn get_current_complexity(&mut self) -> u8 {
 		// elapsed time
 		let current_time = std::time::Instant::now();
 		let erapsed = current_time - self.start;
@@ -63,48 +63,57 @@ impl ComplexityController {
 	}
 }
 
-/// Run application.
-pub fn run() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
-	use crossterm::event::{Event, KeyCode, KeyModifiers};
+pub struct Application;
 
-	// In fact, any key is applied.
-	println!("(Press [Enter] or [Space] to generate random password.)");
-
-	// Keyboard queue
-	let mut keyboard_queue = keyboard::KeyboardQueue::new();
-
-	// complexity time keeper
-	let mut complexity_controller = ComplexityController::new();
-
-	// Main event loop for key press.
-	loop {
-		// Detect key press.
-		let result = keyboard_queue.pop()?;
-		if result.is_none() {
-			// shutdown
-			break;
-		}
-		let key = result.unwrap();
-
-		match key {
-			// [Ctrl][C] to quit.
-			Event::Key(KeyEvent { code: KeyCode::Char('c'), modifiers: KeyModifiers::CONTROL }) => break,
-			// [Q] to quit.
-			Event::Key(KeyEvent { code: KeyCode::Char('q'), modifiers: KeyModifiers::NONE }) => break,
-			// [Enter]
-			Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
-				println!("{}", generator::generate_password(complexity_controller.refresh()));
-			}
-			// [Space]
-			Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => {
-				println!("{}", generator::generate_password(complexity_controller.refresh()))
-			}
-			// Else (any key is applied)
-			_ => {
-				println!("{}", generator::generate_password(complexity_controller.refresh()))
-			}
-		}
+impl Application {
+	/// Returns a new instance of [Application].
+	pub fn new() -> Application {
+		return Application {};
 	}
 
-	return Ok(());
+	/// Run application.
+	pub fn run(&self) -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
+		use crossterm::event::{Event, KeyCode, KeyModifiers};
+
+		// In fact, any key is applied.
+		println!("(Press [Enter] or [Space] to generate random password.)");
+
+		// Keyboard queue
+		let mut keyboard_queue = keyboard::KeyboardQueue::new();
+
+		// complexity time keeper
+		let mut complexity_controller = ComplexityController::new();
+
+		// Main event loop for key press.
+		loop {
+			// Detect key press.
+			let result = keyboard_queue.pop()?;
+			if result.is_none() {
+				// shutdown
+				break;
+			}
+			let key = result.unwrap();
+
+			match key {
+				// [Ctrl][C] to quit.
+				Event::Key(KeyEvent { code: KeyCode::Char('c'), modifiers: KeyModifiers::CONTROL }) => break,
+				// [Q] to quit.
+				Event::Key(KeyEvent { code: KeyCode::Char('q'), modifiers: KeyModifiers::NONE }) => break,
+				// [Enter]
+				Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => {
+					println!("{}", generator::generate_password(complexity_controller.get_current_complexity()))
+				}
+				// [Space]
+				Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => {
+					println!("{}", generator::generate_password(complexity_controller.get_current_complexity()))
+				}
+				// Else (any key is applied)
+				_ => {
+					println!("{}", generator::generate_password(complexity_controller.get_current_complexity()))
+				}
+			}
+		}
+
+		return Ok(());
+	}
 }

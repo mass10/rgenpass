@@ -1,4 +1,4 @@
-name: Rust Application
+name: Rust Application Build Workflow
 
 #
 # TRIGGERS to run this job.

@@ -57,7 +57,7 @@ fn generate_string(complexity: &str, length: u8) -> String {
 ///
 /// ### Arguments
 /// `complexity` Password complexity
-pub fn generate_password(complexity: u8) -> String {
+fn generate_password(complexity: u8) -> String {
 	// complexity and length
 	// TODO: more better!
 	let (characters_set, width) = match complexity {
@@ -130,5 +130,87 @@ pub fn generate_password(complexity: u8) -> String {
 
 		// It's OK.
 		return password;
+	}
+}
+
+///
+/// Complexity controller
+///
+struct ComplexityController {
+	/// Start time
+	start: std::time::Instant,
+	/// Complexity
+	complexity: u8,
+}
+
+impl ComplexityController {
+	/// Returns a new instance.
+	///
+	/// ### Returns
+	/// A new instance of [ComplexityTimeKeeper]
+	pub fn new() -> ComplexityController {
+		return ComplexityController { start: std::time::Instant::now(), complexity: 0 };
+	}
+
+	/// Increment innternal value.
+	fn increment(&mut self) {
+		// prevent MAX overflow.
+		self.complexity = std::cmp::max(self.complexity, self.complexity + 1);
+	}
+
+	/// Decrement innternal value.
+	fn decrement(&mut self) {
+		// prevent MIN overflow.
+		self.complexity = std::cmp::min(self.complexity, self.complexity - 1);
+	}
+
+	/// Refresh complexity.
+	///
+	/// ### Returns
+	/// The current complexity.
+	pub fn get_current_complexity(&mut self) -> u8 {
+		// elapsed time
+		let current_time = std::time::Instant::now();
+		let erapsed = current_time - self.start;
+
+		// Reset internal timeer.
+		self.start = current_time;
+
+		if erapsed.as_millis() < 180 {
+			// Up
+			self.increment();
+			return self.complexity;
+		}
+
+		if erapsed.as_millis() < 250 {
+			// No updates.
+			return self.complexity;
+		}
+
+		// Down
+		self.decrement();
+		return self.complexity;
+	}
+}
+
+///
+/// Password generator.
+///
+pub struct PasswordGenerator {
+	complexity_controller: ComplexityController,
+}
+
+impl PasswordGenerator {
+	/// Returns a new instance of `PasswordGenerator`.
+	///
+	/// ### Returns
+	/// A new instance of `PasswordGenerator`.
+	pub fn new() -> PasswordGenerator {
+		return PasswordGenerator { complexity_controller: ComplexityController::new() };
+	}
+
+	/// Shows new password.
+	pub fn request(&mut self) {
+		println!("{}", generate_password(self.complexity_controller.get_current_complexity()))
 	}
 }

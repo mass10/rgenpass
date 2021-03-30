@@ -18,4 +18,4 @@ cargo install rgenpass
 rgenpass
 ```
 
-![usafe](.images/usage-video.gif)
+![usage](.images/usage-video.gif)

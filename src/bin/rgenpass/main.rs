@@ -1,8 +1,12 @@
+//!
+//! application entrypoint.
+//!
+
 extern crate crossterm;
 
 mod application;
 mod generator;
-mod keyboard;
+mod io;
 
 /// Application entrypoint.
 fn main() {

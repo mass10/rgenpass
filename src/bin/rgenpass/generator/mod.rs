@@ -4,88 +4,6 @@
 
 extern crate rand;
 
-/// Validate string for password.
-///
-/// ### Returns
-/// `true` if valid
-fn is_valid_password(s: &str) -> bool {
-	if s.starts_with(" ") {
-		return false;
-	}
-	if s.ends_with(" ") {
-		return false;
-	}
-
-	if s.starts_with("\"") {
-		return false;
-	}
-
-	if s.starts_with("'") {
-		return false;
-	}
-
-	return true;
-}
-
-/// Generates a string.
-///
-/// ### Arguments
-/// `complexity` String complexity
-/// `length` Required length
-///
-/// ### Returns
-/// a new string
-fn generate_string(complexity: &str, length: u8) -> String {
-	use rand::Rng;
-
-	// generator
-	let mut generator = rand::thread_rng();
-
-	let chars: Vec<char> = complexity.chars().collect();
-	let len = chars.len();
-	let mut response = "".to_string();
-
-	for _ in 0..length {
-		// generate random char
-		let letter_position = generator.gen::<usize>() % len;
-		let letter = chars[letter_position];
-
-		// append to response
-		response.push(letter);
-	}
-
-	return response;
-}
-
-/// Generates a new password. (WIP)
-///
-/// ### Arguments
-/// `complexity` Password complexity
-fn generate_password(complexity: u8) -> String {
-	// complexity and length
-	let (characters_set, width) = match complexity {
-		// simple
-		0..=10 => ("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 10 + (complexity * 3)),
-		// low
-		11..=21 => ("+-0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz", 10 + ((complexity - 11) * 3)),
-		// complex
-		_ => (" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 10 + ((complexity - 22) * 3)),
-	};
-
-	loop {
-		// Generate a new password
-		let password = generate_string(characters_set, width);
-
-		// validation
-		if !is_valid_password(&password) {
-			continue;
-		}
-
-		// It's OK.
-		return password;
-	}
-}
-
 ///
 /// Complexity controller
 ///
@@ -162,8 +80,90 @@ impl PasswordGenerator {
 		return PasswordGenerator { complexity_controller: ComplexityController::new() };
 	}
 
+	/// Generates a string.
+	///
+	/// ### Arguments
+	/// `complexity` String complexity
+	/// `length` Required length
+	///
+	/// ### Returns
+	/// a new string
+	fn generate_string(complexity: &str, length: u8) -> String {
+		use rand::Rng;
+
+		// generator
+		let mut generator = rand::thread_rng();
+
+		let chars: Vec<char> = complexity.chars().collect();
+		let len = chars.len();
+		let mut response = "".to_string();
+
+		for _ in 0..length {
+			// generate random char
+			let letter_position = generator.gen::<usize>() % len;
+			let letter = chars[letter_position];
+
+			// append to response
+			response.push(letter);
+		}
+
+		return response;
+	}
+
+	/// Validate string for password.
+	///
+	/// ### Returns
+	/// `true` if valid
+	fn is_valid_password(s: &str) -> bool {
+		if s.starts_with(" ") {
+			return false;
+		}
+		if s.ends_with(" ") {
+			return false;
+		}
+
+		if s.starts_with("\"") {
+			return false;
+		}
+
+		if s.starts_with("'") {
+			return false;
+		}
+
+		return true;
+	}
+
+	/// Generates a new password. (WIP)
+	///
+	/// ### Arguments
+	/// `complexity` Password complexity
+	fn generate_password(complexity: u8) -> String {
+		// complexity and length
+		let (characters_set, width) = match complexity {
+			// simple
+			0..=10 => ("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", 10 + (complexity * 3)),
+			// low
+			11..=21 => ("+-0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz", 10 + ((complexity - 11) * 3)),
+			// complex
+			_ => (" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~", 10 + ((complexity - 22) * 3)),
+		};
+
+		loop {
+			// Generate a new password
+			let password = PasswordGenerator::generate_string(characters_set, width);
+
+			// validation
+			if !PasswordGenerator::is_valid_password(&password) {
+				continue;
+			}
+
+			// It's OK.
+			return password;
+		}
+	}
+
 	/// Shows new password.
 	pub fn request(&mut self) {
-		println!("{}", generate_password(self.complexity_controller.get_current_complexity()))
+		println!("{}", PasswordGenerator::generate_password(self.complexity_controller.get_current_complexity()))
 	}
 }

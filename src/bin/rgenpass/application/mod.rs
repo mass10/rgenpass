@@ -46,11 +46,11 @@ impl Application {
 				Event::Key(KeyEvent { code: KeyCode::Char('c'), modifiers: KeyModifiers::CONTROL }) => break,
 				// [Q] to quit.
 				Event::Key(KeyEvent { code: KeyCode::Char('q'), modifiers: KeyModifiers::NONE }) => break,
-				// [Enter]
+				// [Enter] to continue.
 				Event::Key(KeyEvent { code: KeyCode::Enter, modifiers: KeyModifiers::NONE }) => generator.request(),
-				// [Space]
+				// [Space] to continue.
 				Event::Key(KeyEvent { code: KeyCode::Char(' '), modifiers: KeyModifiers::NONE }) => generator.request(),
-				// Else (any key is applied)
+				// Else to continue.
 				_ => generator.request(),
 			}
 		}
